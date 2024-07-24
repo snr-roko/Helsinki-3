@@ -39,7 +39,7 @@ app.get('/api/persons/:id', (request, response) => {
   id = request.params.id
   const person = persons.find(person => person.id === id)
   if(person) return response.json(person)
-  else return response.status('404').end()
+  else return response.status(404).end()
 })
 
 const PORT = '3001'
