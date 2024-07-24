@@ -50,13 +50,23 @@ app.delete('/api/persons/:id', (request, response) => {
 
 app.post('/api/persons', (request, response) => {
   const body = request.body
-  const person = {
+
+  if(!body.name) return (
+    response.status(400).json({error: "Name can not be ommitted"})
+  )
+  if(!body.number) return(
+    response.status(400).json({error: "Number can not be ommitted"})
+  )
+  const newPerson = {
     id: Math.floor(Math.random() * 10000),
     name: body.name,
     number: body.number
   }
-  persons = [...persons, person]
-  response.json(person)
+  if(persons.some(person => person.name === newPerson.name)) return (
+    response.status(400).json({error: "Name must be unique"})
+  )
+  persons = [...persons, newPerson]
+  response.json(newPerson)
 })
 
 const PORT = '3001'
