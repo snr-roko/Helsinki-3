@@ -3,7 +3,13 @@ const morgan = require('morgan')
 const app = express()
 
 app.use(express.json())
-app.use(morgan('tiny'))
+
+// creating a morgan token
+morgan.token('post-data', (req, res) => req.method === 'POST' ? JSON.stringify(req.body) : 'N/A')
+
+const morgan_custom = ':method :url :res[content-length] - :response-time ms :post-data'
+
+app.use(morgan(morgan_custom))
 
 let persons = [
   { 
