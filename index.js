@@ -1,6 +1,9 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
+const mongoose = require('mongoose')
+const Person = require('./model/person')
 const app = express()
 
 app.use(express.static('./dist'))
@@ -39,7 +42,11 @@ let persons = [
 ]
 
 app.get('/api/persons', (request, response) => {
-  response.json(persons)
+  Person.find({})
+    .then((contacts) => {
+      response.json(contacts)
+      mongoose.connection.close()
+    })
 })
 
 app.get('/info', (request, response) => {
@@ -82,7 +89,7 @@ app.post('/api/persons', (request, response) => {
   response.json(newPerson)
 })
 
-const PORT = '3001'
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`)
 })
