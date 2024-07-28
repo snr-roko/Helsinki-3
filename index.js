@@ -45,7 +45,6 @@ app.get('/api/persons', (request, response) => {
   Person.find({})
     .then((contacts) => {
       response.json(contacts)
-      mongoose.connection.close()
     })
 })
 
