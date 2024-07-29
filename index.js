@@ -49,16 +49,21 @@ app.get('/api/persons', (request, response) => {
 })
 
 app.get('/info', (request, response) => {
-  const entries = persons.length
-  const requestTime = new Date()
-  response.send(`Phonebook has info for ${entries} people <br> ${requestTime}`)
-})
+  Person.countDocuments({})
+    .then(count => {
+      const requestTime = new Date()
+      response.send(`Phonebook has info for ${count} people <br> ${requestTime}`)
+    })
+  })
 
 app.get('/api/persons/:id', (request, response) => {
-  id = request.params.id
-  const person = persons.find(person => person.id === id)
-  if(person) return response.json(person)
-  else return response.status(404).end()
+  Person.findById(request.params.id)
+    .then(contact => {
+      response.json(contact)
+    })
+    .catch(error => {
+      response.status(400).send({error: "ID request not found"})
+    })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
