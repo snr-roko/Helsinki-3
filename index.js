@@ -105,6 +105,19 @@ app.post('/api/persons', (request, response, next) => {
     .catch(error => next(error))
 })
 
+app.put('/api/persons/:id', (request, response, next) => {
+  const body = request.body
+  const updatedData = {
+    name: body.name,
+    number: body.number
+  }
+  Person.findByIdAndUpdate(request.params.id, updatedData, {new: true})
+    .then(updatedData => {
+      response.json(updatedData)
+    })
+    .catch(error => next(error))
+})
+
 app.use(errorHandler)
 
 const PORT = process.env.PORT
