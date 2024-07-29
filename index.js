@@ -56,6 +56,7 @@ app.get('/api/persons', (request, response) => {
     })
 })
 
+// Info implemented with database
 app.get('/info', (request, response) => {
   Person.countDocuments({})
     .then(count => {
