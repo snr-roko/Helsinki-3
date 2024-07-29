@@ -20,34 +20,13 @@ app.use(morgan(morgan_custom))
 
 const errorHandler = (error, request, response, next) => {
   if(error.name === 'CastError') {
-    response.status(400).send({error: "ID malformatted"})
+    return response.status(400).send({error: "ID malformatted"})
+  } else if(error.name === 'ValidationError') {
+    return response.status(400).send({error: error.message})
   }
 
   next(error)
 }
-
-let persons = [
-  { 
-    "id": "1",
-    "name": "Arto Hellas", 
-    "number": "040-123456"
-  },
-  { 
-    "id": "2",
-    "name": "Ada Lovelace", 
-    "number": "39-44-5323523"
-  },
-  { 
-    "id": "3",
-    "name": "Dan Abramov", 
-    "number": "12-43-234345"
-  },
-  { 
-    "id": "4",
-    "name": "Mary Poppendieck", 
-    "number": "39-23-6423122"
-  }
-]
 
 app.get('/api/persons', (request, response) => {
   Person.find({})
@@ -56,7 +35,7 @@ app.get('/api/persons', (request, response) => {
     })
 })
 
-// Info implemented with databaseE
+// Info implemented with database
 app.get('/info', (request, response) => {
   Person.countDocuments({})
     .then(count => {
