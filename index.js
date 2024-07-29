@@ -81,16 +81,15 @@ app.post('/api/persons', (request, response) => {
   if(!body.number) return(
     response.status(400).json({error: "Number can not be ommitted"})
   )
-  const newPerson = {
-    id: Math.floor(Math.random() * 10000),
+  const person = new Person({
     name: body.name,
     number: body.number
-  }
-  if(persons.some(person => person.name === newPerson.name)) return (
-    response.status(400).json({error: "Name must be unique"})
-  )
-  persons = [...persons, newPerson]
-  response.json(newPerson)
+  })
+
+  person.save()
+    .then(savedData => {
+      response.json(savedData)
+    })
 })
 
 const PORT = process.env.PORT
