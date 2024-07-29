@@ -18,6 +18,14 @@ const morgan_custom = ':method :url :res[content-length] - :response-time ms :po
 
 app.use(morgan(morgan_custom))
 
+const errorHandler = (error, request, response, next) => {
+  if(error.name === 'CastError') {
+    response.status(400).send({error: "ID malformatted"})
+  }
+
+  next(error)
+}
+
 let persons = [
   { 
     "id": "1",
@@ -56,13 +64,13 @@ app.get('/info', (request, response) => {
     })
   })
 
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response, next) => {
   Person.findById(request.params.id)
     .then(contact => {
       response.json(contact)
     })
     .catch(error => {
-      response.status(400).send({error: "ID request not found"})
+      next(error)
     })
 })
 
@@ -72,11 +80,11 @@ app.delete('/api/persons/:id', (request, response) => {
       response.status(202).end()
     })
     .catch(error => {
-      response.status(400).send({error: "ID request not found"})
+      next(error)
     })
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const body = request.body
 
   if(!body.name) return (
@@ -94,7 +102,10 @@ app.post('/api/persons', (request, response) => {
     .then(savedData => {
       response.json(savedData)
     })
+    .catch(error => next(error))
 })
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
